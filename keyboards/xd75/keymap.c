@@ -155,8 +155,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   },
 
   /* FUNCTION
-  * .----------------------------------------------------------------------------------------------------------------------- 2u ------------.
-  * | NUM LK | F1      | F2     | F3     | F4     | F5     | F6     | F7     | F8     | F9     | F10    | F11    | F12    | XXXXXX .        |
+  * .---------------------------------------------------------------------------------------------------------------------------------------.
+  * | NUM LK | F1      | F2     | F3     | F4     | F5     | F6     | F7     | F8     | F9     | F10    | F11    | F12    | XXXXXX |  MIDI  |
   * |--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+-----------------|
   * | SCR LK | F13     | F14    | F15    | F16    | F17    | F18    | F19    | F20    | F21    | F22    | F23    | F24    | PAUSE  | PR SCR |
   * |--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+- 2u ------------+--------|
@@ -200,7 +200,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 // User Functions
-void set_default_layer_color(uint8_t layer) {
+void rgb_color_set(uint8_t layer) {
   switch (layer) {
     case _QW:
       rgblight_sethsv(0, 0, 255);
@@ -214,20 +214,21 @@ void set_default_layer_color(uint8_t layer) {
   }
 }
 
+void default_layer_color_set(void) {
+  uint8_t default_layer = eeconfig_read_default_layer();
+  rgb_color_set(default_layer);
+}
+
 void persistent_default_layer_set(uint16_t default_layer) {
-  set_default_layer_color(default_layer);
   eeconfig_update_default_layer(default_layer);
   default_layer_set(default_layer);
+  default_layer_color_set();
 }
 
 // QMK Handlers
 void matrix_init_user(void) {
   rgblight_enable();
-
-  rgblight_mode(1);
-
-  uint8_t default_layer = eeconfig_read_default_layer();
-  set_default_layer_color(default_layer);
+  default_layer_color_set();
 };
 
 const macro_t* action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
@@ -275,13 +276,11 @@ void matrix_scan_user(void) {
             rgblight_setrgb(0xFF, 0x00, 0xFF);
             break;
         case _MI:
-            rgblight_effect_rainbow_swirl(0);
+            rgblight_setrgb(0x00, 0xFF, 0x00);
             break;
-        default: {
-          uint8_t default_layer = eeconfig_read_default_layer();
-          set_default_layer_color(default_layer);
+        default:
+          default_layer_color_set();
           break;
-        }
       }
 
       has_layer_changed = false;
