@@ -1,1 +1,3 @@
 *.hex
+.DS_Store
+.vscode
