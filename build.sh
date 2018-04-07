@@ -5,7 +5,7 @@ set -e
 WORK_PATH=$(pwd)
 QMK_PATH="$WORK_PATH/qmk"
 KEYBOARD=${1:?"You must pass Keyboard name as an argument!"}
-KEYMAP=${2:-"default"}
+KEYMAP=${2:?"You must pass Keymap name as an argument!"}
 
 prepare_qmk() {
   git submodule update
