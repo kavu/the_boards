@@ -22,7 +22,11 @@ build() {
     -v "$QMK_PATH:/qmk" \
     qmk
 
-  mv "$QMK_PATH/$1_$2.hex" "$WORK_PATH"
+  FILES=("$QMK_PATH/"*.hex)
+  for f in "${FILES[@]}"
+  do
+    mv "${f}" "$WORK_PATH"
+  done
 }
 
 prepare_qmk
